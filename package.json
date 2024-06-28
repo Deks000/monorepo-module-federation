@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "workspaces": [
     "packages/*",
-    "service/*"
-  ]
+    "services/*"
+  ],
+  "devDependencies": {
+    "webpack-cli": "^5.1.4"
+  }
 }

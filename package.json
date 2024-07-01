@@ -4,8 +4,5 @@
   "workspaces": [
     "packages/*",
     "services/*"
-  ],
-  "devDependencies": {
-    "webpack-cli": "^5.1.4"
-  }
+  ]
 }

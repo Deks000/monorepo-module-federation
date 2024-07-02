@@ -8,6 +8,8 @@ interface EnvVariables {
     analyzer?: boolean;
     port?: number;
     platform?: BuildPlatform;
+    SHOP_REMOTE_URL?: string;
+    ADMIN_REMOTE_URL?: string;
 }
 export default(env: EnvVariables) => {
     const paths: BuildPaths = {
@@ -17,6 +19,10 @@ export default(env: EnvVariables) => {
         public: path.resolve(__dirname, 'public'),
         src: path.resolve(__dirname, 'src'),
     }
+
+    const SHOP_REMOTE_URL = env.SHOP_REMOTE_URL ?? 'http://localhost:3001'
+    const ADMIN_REMOTE_URL = env.ADMIN_REMOTE_URL ?? 'http://localhost:3002'
+
     const config: webpack.Configuration = buildWebpack( {
         port: env.port ?? 3000,
         mode: env.mode ?? 'development',
@@ -26,11 +32,12 @@ export default(env: EnvVariables) => {
         })
 
     config.plugins.push(new webpack.container.ModuleFederationPlugin({
-        name: 'shop,',
+        name: 'host',
         filename: 'remoteEntry.js',
-        exposes: {
-            // './App': path.resolve(paths.src, 'components', 'App', 'Router.tsx'),
-            './Router': './src/router/Router.tsx',
+
+        remotes: {
+            shop: `shop@${SHOP_REMOTE_URL}/remoteEntry.js`,
+            admin: `admin@${ADMIN_REMOTE_URL}/remoteEntry.js`,
         },
         shared: {
             ...packageJson.dependencies,
